@@ -5,9 +5,9 @@ const resourceGroupPattern = '\/resource[Gg]roups\/(.*?)\/';
 const resourceIdPattern = '\/virtual[Mm]achines\/(.*?)$';
 
 module.exports = function (context, eventGridEvent) {
-    if (eventGridEvent.data.resourceProvider === 'Microsoft.Compute' && eventGridEvent.data.authorization.action === 'Microsoft.Compute/virtualMachines/write') {
-        context.log(eventGridEvent);
-        if (eventGridEvent.eventType === 'Microsoft.Resources.ResourceWriteSuccess') {
+    if (eventGridEvent.data.resourceProvider === 'Microsoft.Compute') {
+        //context.log(eventGridEvent);
+        if (eventGridEvent.eventType === 'Microsoft.Resources.ResourceWriteSuccess' && eventGridEvent.data.authorization.action === 'Microsoft.Compute/virtualMachines/write') {
 
             const resourceGroup = eventGridEvent.data.resourceUri.match(resourceGroupPattern)[1];
             const resourceId = eventGridEvent.data.resourceUri.match(resourceIdPattern)[1];
@@ -19,8 +19,7 @@ module.exports = function (context, eventGridEvent) {
                 setErrorAndCloseContext(context, err, 500);
             });
 
-
-        } else if (eventGridEvent.eventType === 'Microsoft.Resources.ResourceDeleteSuccess') {
+        } else if (eventGridEvent.eventType === 'Microsoft.Resources.ResourceDeleteSuccess' && eventGridEvent.data.authorization.action === 'Microsoft.Compute/virtualMachines/delete') {
             const resourceGroup = eventGridEvent.data.resourceUri.match(resourceGroupPattern)[1];
             const resourceId = eventGridEvent.data.resourceUri.match(resourceIdPattern)[1];
 
