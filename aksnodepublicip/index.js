@@ -16,11 +16,11 @@ module.exports = function (context, eventGridEvent) {
                 context.log("OK");
                 context.done();
             }).catch((err) => {
-                setErrorAndCloseContext(context,err,500);
+                setErrorAndCloseContext(context, err, 500);
             });
 
 
-        } else if (eventGridEvent.eventType === 'Microsoft.Resources.DeleteSuccess')
+        } else if (eventGridEvent.eventType === 'Microsoft.Resources.DeleteSuccess') {
             const resourceGroup = eventGridEvent.data.resourceUri.match(resourceGroupPattern)[1];
             const resourceId = eventGridEvent.data.resourceUri.match(resourceIdPattern)[1];
 
@@ -28,7 +28,7 @@ module.exports = function (context, eventGridEvent) {
                 context.log("OK");
                 context.done();
             }).catch((err) => {
-                setErrorAndCloseContext(context,err,500);
+                setErrorAndCloseContext(context, err, 500);
             });
         }
     }
