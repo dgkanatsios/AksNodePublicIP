@@ -5,8 +5,8 @@ const resourceGroupPattern = '\/resource[Gg]roups\/(.*?)\/';
 const resourceIdPattern = '\/virtual[Mm]achines\/(.*?)$';
 
 module.exports = function (context, eventGridEvent) {
-    context.log(eventGridEvent);
-    if (eventGridEvent.data.resourceProvider === 'Microsoft.Compute/virtualMachines') {
+    if (eventGridEvent.data.resourceProvider === 'Microsoft.Compute') {
+        context.log(eventGridEvent);
         if (eventGridEvent.eventType === 'Microsoft.Resources.ResourceWriteSuccess') {
 
             const resourceGroup = eventGridEvent.data.resourceUri.match(resourceGroupPattern)[1];
