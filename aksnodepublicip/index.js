@@ -20,7 +20,7 @@ module.exports = function (context, eventGridEvent) {
             });
 
 
-        } else if (eventGridEvent.eventType === 'Microsoft.Resources.DeleteSuccess') {
+        } else if (eventGridEvent.eventType === 'Microsoft.Resources.ResourceDeleteSuccess') {
             const resourceGroup = eventGridEvent.data.resourceUri.match(resourceGroupPattern)[1];
             const resourceId = eventGridEvent.data.resourceUri.match(resourceIdPattern)[1];
 
