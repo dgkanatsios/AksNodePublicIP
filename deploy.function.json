@@ -1,0 +1,167 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"variables": {
+		"serverFarmResourceGroup": "[resourceGroup().id]",
+		"workerSize": "0",
+		"subscriptionId": "[subscription().subscriptionId]",
+		"sku": "Free",
+		"skuCode": "F1"
+	},
+	"parameters": {
+		"functionName": {
+			"type": "string"
+		},
+		"storageName": {
+			"type": "string"
+		},
+		"aksNodeDetailsPublicIPStorageName": {
+			"type": "string"
+		},
+		"location": {
+			"type": "string"
+		},
+		"repoUrl": {
+			"type": "string"
+		},
+		"hostingPlanName": {
+			"type": "string"
+		},
+		"ClientId": {
+            "type": "securestring"
+        },
+        "ClientSecret": {
+            "type": "securestring"
+        },
+	},
+	"resources": [{
+			"type": "microsoft.insights/components",
+			"apiVersion": "2015-05-01",
+			"name": "[parameters('functionName')]",
+			"location": "South Central US",
+			"properties": {
+				"ApplicationId": "[parameters('functionName')]"
+			}
+		},
+		{
+			"apiVersion": "2015-05-01-preview",
+			"type": "Microsoft.Storage/storageAccounts",
+			"name": "[parameters('storageName')]",
+			"location": "[parameters('location')]",
+			"properties": {
+				"accountType": "Standard_LRS"
+			}
+		},
+		{
+			"apiVersion": "2015-05-01-preview",
+			"type": "Microsoft.Storage/storageAccounts",
+			"name": "[parameters('aksNodeDetailsPublicIPStorageName')]",
+			"location": "[parameters('location')]",
+			"properties": {
+				"accountType": "Standard_LRS"
+			}
+		},
+		{
+			"apiVersion": "2016-09-01",
+			"name": "[parameters('hostingPlanName')]",
+			"type": "Microsoft.Web/serverfarms",
+			"location": "[parameters('location')]",
+			"properties": {
+				"name": "[parameters('hostingPlanName')]",
+				"workerSizeId": "[variables('workerSize')]",
+				"reserved": false,
+				"numberOfWorkers": "1",
+				"hostingEnvironment": ""
+			},
+			"sku": {
+				"Tier": "[variables('sku')]",
+				"Name": "[variables('skuCode')]"
+			}
+		},
+		{
+			"apiVersion": "2016-03-01",
+			"name": "[parameters('functionName')]",
+			"type": "Microsoft.Web/Sites",
+			"properties": {
+				"name": "[parameters('functionName')]",
+				"clientAffinityEnabled": false,
+				"serverFarmId": "[concat('/subscriptions/', variables('subscriptionId'),'/resourcegroups/', variables('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+				"siteConfig": {
+					"appSettings": [{
+							"name": "AzureWebJobsDashboard",
+							"value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageName'), ';AccountKey=', listKeys(parameters('storageName'),'2015-05-01-preview').key1)]"
+						},
+						{
+							"name": "AzureWebJobsStorage",
+							"value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageName'), ';AccountKey=', listKeys(parameters('storageName'),'2015-05-01-preview').key1)]"
+						},
+						{
+							"name": "FUNCTIONS_EXTENSION_VERSION",
+							"value": "~1"
+						},
+						{
+							"name": "WEBSITE_NODE_DEFAULT_VERSION",
+							"value": "6.5.0"
+						},
+						{
+							"name": "SUBSCRIPTIONID",
+							"value": "[subscription().subscriptionId]"
+						},
+						{
+							"name":"TENANT",
+							"value":"[subscription().tenantId]"
+						},
+						{
+							"name":"CLIENTID",
+							"value":"[parameters('ClientId')]"
+						},
+						{
+							"name":"CLIENTSECRET",
+							"value":"[parameters('ClientSecret')]"
+						},
+						{
+							"name": "NODE_ENV",
+							"value": "production"
+						},
+						{
+							"name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+							"value": "[reference(resourceId('microsoft.insights/components/', parameters('functionName')), '2015-05-01').InstrumentationKey]"
+						},
+						{
+							"name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+							"value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageName'), ';AccountKey=', listKeys(parameters('storageName'),'2015-05-01-preview').key1)]"
+						},
+						{
+							"name": "WEBSITE_CONTENTSHARE",
+							"value": "[toLower(parameters('functionName'))]"
+						},
+						{
+							"name": "LOCATION",
+							"value": "[resourceGroup().location]"
+						}
+					]
+				}
+			},
+			"resources": [{
+				"apiVersion": "2015-08-01",
+				"name": "web",
+				"type": "sourcecontrols",
+				"dependsOn": [
+					"[resourceId('Microsoft.Web/Sites/', parameters('functionName'))]"
+				],
+				"properties": {
+					"RepoUrl": "[parameters('repoUrl')]",
+					"branch": "master",
+					"IsManualIntegration": true
+				}
+			}],
+			"dependsOn": [
+				"[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+				"[resourceId('Microsoft.Storage/storageAccounts', parameters('storageName'))]",
+				"[resourceId('Microsoft.Storage/storageAccounts', parameters('aksNodeDetailsPublicIPStorageName'))]"
+			],
+			"location": "[parameters('location')]",
+			"kind": "functionapp"
+		}
+	]
+}

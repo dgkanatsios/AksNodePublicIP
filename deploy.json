@@ -1,0 +1,72 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "variables": {
+        "storageName": "[concat(uniqueString(parameters('functionName')), 'storage')]",
+        "aksNodeDetailsPublicIPStorageName": "[concat(uniqueString(parameters('functionName')), 'aksnode')]",
+        "hostingPlanName": "[concat(toLower(parameters('functionName')), 'hostingplan')]"
+    },
+    "parameters": {
+        "functionName": {
+            "type": "string",
+            "metadata": {
+                "description": "It's your Azure Function's domain name. Make sure it is unique, as this will determine Function's DNS"
+            }
+        },
+        "ClientId": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Service Principal Id which can be used by Functions to modify VM details and create Public IP"
+            }
+        },
+        "ClientSecret": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Service Principal Secret which can be used by Functions to modify VM details and create Public IP"
+            }
+        },
+        "repoUrl": {
+            "type": "string",
+            "defaultValue": "https://github.com/dgkanatsios/AksNodePublicIP"
+        }
+    },
+    "resources": [
+        {
+            "name": "MainResources",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2016-09-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/dgkanatsios/AksNodePublicIP/master/deploy.function.json"
+                },
+                "parameters": {
+                    "storageName": {
+                        "value": "[variables('storageName')]"
+                    },
+                    "aksNodeDetailsPublicIPStorageName": {
+                        "value": "[variables('aksNodeDetailsPublicIPStorageName')]"
+                    },
+                    "location": {
+                        "value": "[resourceGroup().location]"
+                    },
+                    "functionName": {
+                        "value": "[parameters('functionName')]"
+                    },
+                    "repoUrl": {
+                        "value": "[parameters('repoUrl')]"
+                    },
+                    "hostingPlanName": {
+                        "value": "[variables('hostingPlanName')]"
+                    },
+                    "ClientId": {
+                        "value": "[parameters('ClientId')]"
+                    },
+                    "ClientSecret": {
+                        "value": "[parameters('ClientSecret')]"
+                    }
+                }
+            }
+        }
+    ]
+}
