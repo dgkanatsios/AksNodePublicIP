@@ -3,7 +3,6 @@
     "contentVersion": "1.0.0.0",
     "variables": {
         "storageName": "[concat(uniqueString(parameters('functionName')), 'storage')]",
-        "aksNodeDetailsPublicIPStorageName": "[concat(uniqueString(parameters('functionName')), 'aksnode')]",
         "hostingPlanName": "[concat(toLower(parameters('functionName')), 'hostingplan')]"
     },
     "parameters": {
@@ -43,9 +42,6 @@
                 "parameters": {
                     "storageName": {
                         "value": "[variables('storageName')]"
-                    },
-                    "aksNodeDetailsPublicIPStorageName": {
-                        "value": "[variables('aksNodeDetailsPublicIPStorageName')]"
                     },
                     "location": {
                         "value": "[resourceGroup().location]"
