@@ -5,6 +5,6 @@
 
 # AksNodePublicIP
 
-A simple solution to automatically give Public IPs to Nodes (worker virtual machines) that are created on an Azure Kubernetes Service cluster.
+A simple solution to automatically give Public IPs to Nodes (worker virtual machines) that are created (via scaling) on an Azure Kubernetes Service cluster.
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdgkanatsios%2FAksNodePublicIP%2Fmaster%2Fdeploy.json" target="_blank"><img src="http://azuredeploy.net/deploybutton.png"/></a>

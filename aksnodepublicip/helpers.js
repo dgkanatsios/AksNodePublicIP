@@ -1,4 +1,3 @@
-require('dotenv').config();
 const msRestAzure = require('ms-rest-azure');
 const ComputeManagementClient = require('azure-arm-compute').ComputeManagementClient;
 const NetworkManagementClient = require('azure-arm-network').NetworkManagementClient;
@@ -9,17 +8,10 @@ const secret = process.env['CLIENTSECRET'];
 const subscriptionId = process.env['SUBSCRIPTIONID'];
 const location = process.env['LOCATION'];
 
-const resourceGroupName = "MC_akstestrg2_akstest2_westeurope";
-const vmName = "aks-nodepool1-19002429-1";
-const publicIPName = "ipconfig-" + vmName;
-
-
 const credentials = new msRestAzure.ApplicationTokenCredentials(clientId, domain, secret);
 
 const computeClient = new ComputeManagementClient(credentials, subscriptionId);
 const networkClient = new NetworkManagementClient(credentials, subscriptionId);
-
-
 
 function addPublicIP(resourceGroupName, publicIPName, vmName) {
     return new Promise((resolve, reject) => {
@@ -38,7 +30,7 @@ function addPublicIP(resourceGroupName, publicIPName, vmName) {
             return networkClient.networkInterfaces.get(resourceGroupName, nicName, null);
         }).then(networkInterface => {
             networkInterface.ipConfigurations[0].publicIPAddress = ipAddress;
-            console.log("networkinterfacename & id:", networkInterface.name, networkInterface.id);
+            //context.log("networkinterfacename & id:", networkInterface.name, networkInterface.id);
             return networkClient.networkInterfaces.createOrUpdate(resourceGroupName, networkInterface.name, networkInterface);
         }).then(() => resolve("OK")).catch(err => reject(err));
     });
