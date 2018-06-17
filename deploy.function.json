@@ -92,7 +92,7 @@
 							"value": "6.5.0"
 						},
 						{
-							"name": "SUBSCRIPTIONID",
+							"name": "SUBSCRIPTION_ID",
 							"value": "[subscription().subscriptionId]"
 						},
 						{
@@ -100,11 +100,11 @@
 							"value":"[subscription().tenantId]"
 						},
 						{
-							"name":"CLIENTID",
+							"name":"CLIENT_ID",
 							"value":"[parameters('ClientId')]"
 						},
 						{
-							"name":"CLIENTSECRET",
+							"name":"CLIENT_SECRET",
 							"value":"[parameters('ClientSecret')]"
 						},
 						{

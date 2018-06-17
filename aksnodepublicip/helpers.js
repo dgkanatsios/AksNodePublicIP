@@ -2,10 +2,10 @@ const msRestAzure = require('ms-rest-azure');
 const ComputeManagementClient = require('azure-arm-compute').ComputeManagementClient;
 const NetworkManagementClient = require('azure-arm-network').NetworkManagementClient;
 
-const clientId = process.env['CLIENTID'];
+const clientId = process.env['CLIENT_ID'];
 const domain = process.env['TENANT'];
-const secret = process.env['CLIENTSECRET'];
-const subscriptionId = process.env['SUBSCRIPTIONID'];
+const secret = process.env['CLIENT_SECRET'];
+const subscriptionId = process.env['SUBSCRIPTION_ID'];
 const location = process.env['LOCATION'];
 
 const credentials = new msRestAzure.ApplicationTokenCredentials(clientId, domain, secret);
