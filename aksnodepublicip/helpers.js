@@ -1,4 +1,3 @@
-const msRestAzure = require('ms-rest-azure');
 const ComputeManagementClient = require('azure-arm-compute').ComputeManagementClient;
 const NetworkManagementClient = require('azure-arm-network').NetworkManagementClient;
 
