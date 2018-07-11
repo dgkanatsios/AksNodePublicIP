@@ -26,13 +26,7 @@
 		},
 		"hostingPlanName": {
 			"type": "string"
-		},
-		"ClientId": {
-            "type": "securestring"
-        },
-        "ClientSecret": {
-            "type": "securestring"
-        }
+		}
 	},
 	"resources": [{
 			"type": "microsoft.insights/components",
@@ -104,14 +98,6 @@
 						{
 							"name":"TENANT",
 							"value":"[subscription().tenantId]"
-						},
-						{
-							"name":"CLIENT_ID",
-							"value":"[parameters('ClientId')]"
-						},
-						{
-							"name":"CLIENT_SECRET",
-							"value":"[parameters('ClientSecret')]"
 						},
 						{
 							"name": "NODE_ENV",
