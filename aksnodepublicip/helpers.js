@@ -8,13 +8,12 @@ const secret = process.env['CLIENT_SECRET'];
 const subscriptionId = process.env['SUBSCRIPTION_ID'];
 const location = process.env['LOCATION'];
 
-const credentials = new msRestAzure.ApplicationTokenCredentials(clientId, domain, secret);
-
-const computeClient = new ComputeManagementClient(credentials, subscriptionId);
-const networkClient = new NetworkManagementClient(credentials, subscriptionId);
-
-function addPublicIP(resourceGroupName, publicIPName, vmName) {
+function addPublicIP(resourceGroupName, publicIPName, vmName, credentials) {
     return new Promise((resolve, reject) => {
+
+        const computeClient = new ComputeManagementClient(credentials, subscriptionId);
+        const networkClient = new NetworkManagementClient(credentials, subscriptionId);
+
         let ipAddress;
         const publicIPParameters = {
             location: location,
@@ -36,8 +35,9 @@ function addPublicIP(resourceGroupName, publicIPName, vmName) {
     });
 }
 
-function deletePublicIP(resourceGroupName, publicIPName) {
+function deletePublicIP(resourceGroupName, publicIPName, credentials) {
     return new Promise((resolve, reject) => {
+        const networkClient = new NetworkManagementClient(credentials, subscriptionId);
         networkClient.publicIPAddresses.deleteMethod(resourceGroupName, publicIPName).then(() => resolve("OK")).catch(err => reject(err));
     });
 }
