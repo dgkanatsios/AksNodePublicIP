@@ -32,9 +32,13 @@
 		},
 		"NumberOfInitialVirtualMachines": {
 			"type": "int"
+		},
+		"AKSResourcesResourceGroup": {
+			"type": "string"
 		}
 	},
-	"resources": [{
+	"resources": [
+		{
 			"type": "microsoft.insights/components",
 			"apiVersion": "2015-05-01",
 			"name": "[parameters('functionName')]",
@@ -75,13 +79,14 @@
 			"type": "Microsoft.Web/Sites",
 			"identity": {
 				"type": "SystemAssigned"
-			},    
+			},
 			"properties": {
 				"name": "[parameters('functionName')]",
 				"clientAffinityEnabled": false,
 				"serverFarmId": "[concat('/subscriptions/', variables('subscriptionId'),'/resourcegroups/', variables('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
 				"siteConfig": {
-					"appSettings": [{
+					"appSettings": [
+						{
 							"name": "AzureWebJobsDashboard",
 							"value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageName'), ';AccountKey=', listKeys(parameters('storageName'),'2015-05-01-preview').key1)]"
 						},
@@ -102,8 +107,8 @@
 							"value": "[subscription().subscriptionId]"
 						},
 						{
-							"name":"TENANT",
-							"value":"[subscription().tenantId]"
+							"name": "TENANT",
+							"value": "[subscription().tenantId]"
 						},
 						{
 							"name": "NODE_ENV",
@@ -132,23 +137,29 @@
 						{
 							"name": "NUMBER_OF_INITIAL_VMS",
 							"value": "[parameters('NumberOfInitialVirtualMachines')]"
+						},
+						{
+							"name": "RESOURCE_GROUP",
+							"value": "[parameters('AKSResourcesResourceGroup')]"
 						}
 					]
 				}
 			},
-			"resources": [{
-				"apiVersion": "2015-08-01",
-				"name": "web",
-				"type": "sourcecontrols",
-				"dependsOn": [
-					"[resourceId('Microsoft.Web/Sites/', parameters('functionName'))]"
-				],
-				"properties": {
-					"RepoUrl": "[parameters('repoUrl')]",
-					"branch": "[parameters('branch')]",
-					"IsManualIntegration": true
+			"resources": [
+				{
+					"apiVersion": "2015-08-01",
+					"name": "web",
+					"type": "sourcecontrols",
+					"dependsOn": [
+						"[resourceId('Microsoft.Web/Sites/', parameters('functionName'))]"
+					],
+					"properties": {
+						"RepoUrl": "[parameters('repoUrl')]",
+						"branch": "[parameters('branch')]",
+						"IsManualIntegration": true
+					}
 				}
-			}],
+			],
 			"dependsOn": [
 				"[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
 				"[resourceId('Microsoft.Storage/storageAccounts', parameters('storageName'))]"
