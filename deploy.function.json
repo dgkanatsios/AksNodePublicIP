@@ -26,6 +26,12 @@
 		},
 		"hostingPlanName": {
 			"type": "string"
+		},
+		"VMPrefixName": {
+			"type": "string"
+		},
+		"NumberOfInitialVMs": {
+			"type": "string"
 		}
 	},
 	"resources": [{
@@ -121,11 +127,11 @@
 						},
 						{
 							"name": "VM_PREFIX_NAME",
-							"value": "CHANGE_ME"
+							"value": "[parameters('VMPrefixName')]"
 						},
 						{
 							"name": "NUMBER_OF_INITIAL_VMS",
-							"value": "2"
+							"value": "[parameters('NumberOfInitialVMs')]"
 						}
 					]
 				}

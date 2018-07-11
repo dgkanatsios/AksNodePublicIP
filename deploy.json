@@ -19,6 +19,14 @@
         "branch":{
             "type": "string",
             "defaultValue": "master"
+        },
+        "VMPrefixName":{
+            "type": "string",
+            "defaultValue": "CHANGE_ME"
+        },
+        "NumberOfInitialVMs":{
+            "type": "int",
+            "defaultValue": "2"
         }
     },
     "resources": [
@@ -49,6 +57,12 @@
                     },
                     "hostingPlanName": {
                         "value": "[variables('hostingPlanName')]"
+                    },
+                    "VMPrefixName": {
+                        "value": "[parameters('VMPrefixName')]"
+                    },
+                    "NumberOfInitialVMs": {
+                        "value": "[parameters('NumberOfInitialVMs')]"
                     }
                 }
             }
