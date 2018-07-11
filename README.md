@@ -24,7 +24,7 @@ Bear in mind that the application creates **dynamic** Public IP addresses for th
 
 To use this project, you need to create an [Azure Kubernetes Service (AKS) cluster](https://azure.microsoft.com/en-us/services/kubernetes-service/). When the AKS deployment is completed, you should deploy this project on your Azure subscription, click here:
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdgkanatsios%2FAksNodePublicIP%master%2Fdeploy.json" target="_blank"><img src="http://azuredeploy.net/deploybutton.png"/></a>
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdgkanatsios%2FAksNodePublicIP%2Fmaster%2Fdeploy.json" target="_blank"><img src="http://azuredeploy.net/deploybutton.png"/></a>
 
 This will deploy the Azure Function App to the Resource Group you choose. Make sure that you deploy it to the same Azure location as your Kubernetes cluster. You need to set up the following variables when deploying:
 
