@@ -20,13 +20,13 @@
             "type": "string",
             "defaultValue": "master"
         },
-        "VMPrefixName":{
+        "VirtualMachinePrefixName":{
             "type": "string",
             "defaultValue": "CHANGE_ME"
         },
-        "NumberOfInitialVMs":{
+        "NumberOfInitialVirtualMachiness":{
             "type": "int",
-            "defaultValue": "2"
+            "defaultValue": 2
         }
     },
     "resources": [
@@ -58,11 +58,11 @@
                     "hostingPlanName": {
                         "value": "[variables('hostingPlanName')]"
                     },
-                    "VMPrefixName": {
-                        "value": "[parameters('VMPrefixName')]"
+                    "VirtualMachinePrefixName": {
+                        "value": "[parameters('VirtualMachinePrefixName')]"
                     },
-                    "NumberOfInitialVMs": {
-                        "value": "[parameters('NumberOfInitialVMs')]"
+                    "NumberOfInitialVirtualMachiness": {
+                        "value": "[parameters('NumberOfInitialVirtualMachiness')]"
                     }
                 }
             }

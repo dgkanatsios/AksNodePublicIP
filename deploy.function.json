@@ -27,10 +27,10 @@
 		"hostingPlanName": {
 			"type": "string"
 		},
-		"VMPrefixName": {
+		"VirtualMachinePrefixName": {
 			"type": "string"
 		},
-		"NumberOfInitialVMs": {
+		"NumberOfInitialVirtualMachiness": {
 			"type": "string"
 		}
 	},
@@ -127,11 +127,11 @@
 						},
 						{
 							"name": "VM_PREFIX_NAME",
-							"value": "[parameters('VMPrefixName')]"
+							"value": "[parameters('VirtualMachinePrefixName')]"
 						},
 						{
 							"name": "NUMBER_OF_INITIAL_VMS",
-							"value": "[parameters('NumberOfInitialVMs')]"
+							"value": "[parameters('NumberOfInitialVirtualMachiness')]"
 						}
 					]
 				}
