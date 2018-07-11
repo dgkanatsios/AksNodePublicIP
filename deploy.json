@@ -22,7 +22,7 @@
         },
         "VirtualMachinePrefixName":{
             "type": "string",
-            "defaultValue": "CHANGE_ME_aks-nodepool1-XXXXXXXX"
+            "defaultValue": "CHANGE_ME->aks-nodepool1-XXXXXXXX-"
         },
         "NumberOfInitialVirtualMachines":{
             "type": "int",
@@ -30,7 +30,7 @@
         },
         "AKSResourcesResourceGroup":{
             "type": "string",
-            "defaultValue": "CHANGE_ME_MC_AKSNAME_AKSRG_LOCATION"
+            "defaultValue": "CHANGE_ME->MC_AKSNAME_AKSRG_LOCATION"
         }
     },
     "resources": [
