@@ -118,6 +118,14 @@
 						{
 							"name": "LOCATION",
 							"value": "[resourceGroup().location]"
+						},
+						{
+							"name": "VM_PREFIX_NAME",
+							"value": "CHANGE_ME"
+						},
+						{
+							"name": "NUMBER_OF_INITIAL_VMS",
+							"value": "2"
 						}
 					]
 				}
