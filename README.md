@@ -31,7 +31,7 @@ This will deploy the Azure Function App to the Resource Group you choose. Make s
 - *Function Name*: Your Azure Function's DNS name (must be unique)
 - *Repo URL*: Either leave the default or enter yours, if you cloned and modified the project
 - *Branch*: Your GitHub repo's branch
-- *Virtual Machine Prefix Name*: The name that prefixes your Virtual Machines in the AKS cluster. Shoulb be something like 'aks-nodepool1-XXXXXXXX-'. Do not forget the dash at the end
+- *Virtual Machine Prefix Name*: The name that prefixes your Virtual Machines in the AKS cluster. You can find the Virtual Machines/worker nodes on the Resource Group named something like 'MC_resourceGroupName_aksName_location'. Virtual Machines should have names like 'aks-nodepool1-26427378-0', 'aks-nodepool1-26427378-1',..., 'aks-nodepool1-26427378-X' etc. Just use the part without the number at the end (aks-nodepool1-XXXXXXX-), without omitting the dash at the end
 - *NumberOfInitialVirtualMachines*: The number of the Virtual Machines that are in your AKS cluster (defaults to 3)
 - *AKSResourcesResourceGroup*: The Resource Group where your AKS resources are located (has a name like 'MC_resourceGroupName_aksName_location')
 
@@ -47,6 +47,8 @@ The project uses [Managed Service Identity](https://docs.microsoft.com/en-us/azu
 ### Create and assign IPs to existing VMs/worker Nodes
 
 When this is finished, you need to create and assign Public IPs to the Virtual Machines/worker nodes that already exist in the cluster. To do this, we have created a Function called *runonce*. You can run the Function from inside the Azure Portal (in the Azure Functions blade) or get its url ([instructions](https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-first-azure-function#test-the-function)) and call it from a web browser or an automated solution. Again, this may take some time. When it's done, all your existing VMs in the AKS cluster have Public IPs.
+
+You may need to run the *runonce* Function again if you upgrade Kubernetes version in your cluster.
 
 ### Create the Event Grid integration
 

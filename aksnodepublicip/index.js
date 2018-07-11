@@ -21,7 +21,8 @@ module.exports = function (context, eventGridEvent) {
                 helpers.setErrorAndCloseContext(context, err, 500);
             });
 
-        } else if (eventGridEvent.eventType === 'Microsoft.Resources.ResourceDeleteSuccess' && eventGridEvent.data.authorization.action === 'Microsoft.Compute/virtualMachines/delete') {
+        }
+        else if (eventGridEvent.eventType === 'Microsoft.Resources.ResourceDeleteSuccess' && eventGridEvent.data.authorization.action === 'Microsoft.Compute/virtualMachines/delete') {
             const resourceGroup = eventGridEvent.data.resourceUri.match(resourceGroupPattern)[1];
             const resourceId = eventGridEvent.data.resourceUri.match(resourceIdPattern)[1];
 
@@ -31,6 +32,10 @@ module.exports = function (context, eventGridEvent) {
             }).catch((err) => {
                 helpers.setErrorAndCloseContext(context, err, 500);
             });
+        }
+        else {
+            context.log(`Received event from RP ${eventGridEvent.data.resourceProvider} and event type ${eventGridEvent.eventType} and action ${eventGridEvent.data.authorization.action} was unhandled`);
+            context.done();
         }
     }
     else {
