@@ -21,6 +21,9 @@
 		"repoUrl": {
 			"type": "string"
 		},
+		"branch": {
+			"type": "string"
+		},
 		"hostingPlanName": {
 			"type": "string"
 		},
@@ -29,7 +32,7 @@
         },
         "ClientSecret": {
             "type": "securestring"
-        },
+        }
 	},
 	"resources": [{
 			"type": "microsoft.insights/components",
@@ -139,7 +142,7 @@
 				],
 				"properties": {
 					"RepoUrl": "[parameters('repoUrl')]",
-					"branch": "master",
+					"branch": "[parameters('branch')]",
 					"IsManualIntegration": true
 				}
 			}],

@@ -27,6 +27,10 @@
         "repoUrl": {
             "type": "string",
             "defaultValue": "https://github.com/dgkanatsios/AksNodePublicIP"
+        },
+        "branch":{
+            "type": "string",
+            "defaultValue": "master"
         }
     },
     "resources": [
@@ -51,6 +55,9 @@
                     },
                     "repoUrl": {
                         "value": "[parameters('repoUrl')]"
+                    },
+                    "branch": {
+                        "value": "[parameters('branch')]"
                     },
                     "hostingPlanName": {
                         "value": "[variables('hostingPlanName')]"
