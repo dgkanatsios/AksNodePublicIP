@@ -6,8 +6,7 @@
 # AksNodePublicIP
 
 When you create a new [Azure Kubernetes Service (AKS)](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough) cluster, the worker nodes do not have Public IPs by default. What if you need them to do so?
-This project is a simple solution to automatically give Public IPs to Nodes (worker virtual machines) that are created (via scaling) on an Azure Kubernetes Service cluster. It will also take care of deleting these Public IPs when the Nodes are removed.
-Moreover, we include a simple app that you can call after you create your cluster to create Public IPs for the initial Nodes there.
+This project is a  solution to automatically give Public IPs to Nodes (worker virtual machines) that are created (via scaling) on an Azure Kubernetes Service cluster. It will also take care of deleting these Public IPs when the Nodes are removed.
 
 ## Architecture
 
@@ -23,23 +22,35 @@ Bear in mind that the application creates **dynamic** Public IP addresses for th
 
 ## Deployment
 
-In order to deploy the project, you need an Azure Service Principal credential that has permission to create/delete resources. This might be the same Service Principal you used to create your AKS cluster or a different one. 
-To use this project, you need to create an [Azure Kubernetes Service (AKS) cluster](https://azure.microsoft.com/en-us/services/kubernetes-service/). When the AKS deployment is completed, you should create Public IPs for the existing Nodes/Virtual Machines. To do that, you can use this project as follows:
+To use this project, you need to create an [Azure Kubernetes Service (AKS) cluster](https://azure.microsoft.com/en-us/services/kubernetes-service/). When the AKS deployment is completed, you should deploy this project on your Azure subscription, click here:
 
-- install [Node.js](https://nodejs.org/en/) on your computer
-- git clone the project locally `git clone https://github.com/dgkanatsios/AksNodePublicIP.git`
-- cd to the cmd folder
-- rename .env.sample file to .env
-- provide correct details for all the variables on the .env file
-- run `npm install` to install necessary packages
-- run `node index` to run the application. This will create Public IP addresses and assign them to your Nodes
-- the app's execution will take some time, after that all your Nodes will have Public IPs
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdgkanatsios%2FAksNodePublicIP%master%2Fdeploy.json" target="_blank"><img src="http://azuredeploy.net/deploybutton.png"/></a>
 
-After you finish that, you need to create the mechanism which will automatically create and assign Public IPs to your new Nodes as well as remove them when Nodes are deleted. This will be handled by the Function `aksnodepublicip` in the relevant folder. To deploy this Function to your Azure subscription, click the following button:
+This will deploy the Azure Function App to the Resource Group you choose. Make sure that you deploy it to the same Azure location as your Kubernetes cluster. You need to set up the following variables when deploying:
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdgkanatsios%2FAksNodePublicIP%2Fmaster%2Fdeploy.json" target="_blank"><img src="http://azuredeploy.net/deploybutton.png"/></a>
+- *Function Name*: Your Azure Function's DNS name (must be unique)
+- *Repo URL*: Either leave the default or enter yours, if you cloned and modified the project
+- *Branch*: Your GitHub repo's branch
+- *Virtual Machine Prefix Name*: The name that prefixes your Virtual Machines in the AKS cluster. Shoulb be something like 'aks-nodepool1-XXXXXXXX-'. Do not forget the dash at the end
+- *NumberOfInitialVirtualMachines*: The number of the Virtual Machines that are in your AKS cluster (defaults to 3)
+- *AKSResourcesResourceGroup*: The Resource Group where your AKS resources are located (has a name like 'MC_resourceGroupName_aksName_location')
 
-As soon as the deployment completes, you need to manually add the Event Subscription webhook for the `aksnodepublicip` Function using the instructions [here](https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-event-grid#create-a-subscription). Just make sure that you select the correct Resource Group to monitor for events (i.e. the Azure Resource Group where your AKS resources have been deployed - name will be similar to 'MC_resourceGroupName_aksName_location', you can also find it via Azure CLI: `az resource show --namespace Microsoft.ContainerService --resource-type managedClusters -g $AKS_RESOURCE_GROUP -n $AKS_NAME -o json | jq .properties.nodeResourceGroup` where *$AKS_RESOURCE_GROUP* is the Resource Group in which you installed your AKS cluster and *$AKS_NAME* is the name of your AKS resource). This will make the Event Grid send a notification to the `aksnodepublicip` Function (check the schema [here](https://docs.microsoft.com/en-us/azure/event-grid/event-schema-resource-groups)) as soon as there is a resource modification in the specified Resource Group. Optionally, as soon as you get the URL of the `aksnodepublicip Function` (you can use the Azure Portal to get that), you can use [this](deploy.eventgridsubscription.json) ARM template to deploy the Event Grid subscription.
+### Give permissions to the Managed Service Identity Credential
+
+The project uses [Managed Service Identity](https://docs.microsoft.com/en-us/azure/app-service/app-service-managed-service-identity)(MSI) to authenticate to the Azure ARM API Management Service. When the deployment is completed (this may take some time), you need to execute the following steps to give to the MSI credential access to the AKS resources Resource Group:
+
+- In the Azure Portal, find the Resource Group that contains your AKS resources (should have a name like 'MC_resourceGroupName_aksName_location')
+- Click on Access Control (IAM)
+- Select Add, pick 'Contributor' as Role, Assign Access to 'Function App' and then pick the Azure Subcription/Resource Group/Function App name combination that corresponds to the Function App you deployed a while ago.
+- You're done!
+
+### Create and assign IPs to existing VMs/worker Nodes
+
+When this is finished, you need to create and assign Public IPs to the Virtual Machines/worker nodes that already exist in the cluster. To do this, we have created a Function called *runonce*. You can run the Function from inside the Azure Portal (in the Azure Functions blade) or get its url ([instructions](https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-first-azure-function#test-the-function)) and call it from a web browser or an automated solution. Again, this may take some time. When it's done, all your existing VMs in the AKS cluster have Public IPs.
+
+### Create the Event Grid integration
+
+Now, you need to manually add the Event Grid Subscription webhook for the `aksnodepublicip` Function using the instructions [here](https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-event-grid#create-a-subscription). Just make sure that you select the correct Resource Group to monitor for events (i.e. the Azure Resource Group where your AKS resources have been deployed - name will be similar to 'MC_resourceGroupName_aksName_location'). You can also find its name via Azure CLI: `az resource show --namespace Microsoft.ContainerService --resource-type managedClusters -g $AKS_RESOURCE_GROUP -n $AKS_NAME -o json | jq .properties.nodeResourceGroup`, where *$AKS_RESOURCE_GROUP* is the Resource Group in which you installed your AKS cluster and *$AKS_NAME* is the name of your AKS resource. This will make the Event Grid send a notification to the `aksnodepublicip` Function (check the JSON schema [here](https://docs.microsoft.com/en-us/azure/event-grid/event-schema-resource-groups)) as soon as there is a resource modification in the specified Resource Group. Optionally, as soon as you get the URL of the `aksnodepublicip` Function (you can use the Azure Portal to get that), you can use [this](deploy.eventgridsubscription.json) ARM template to deploy the Event Grid subscription.
 
 When you deploy the Event Grid subscription using the Portal, these are the values you need to fill in:
 

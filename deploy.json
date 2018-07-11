@@ -12,18 +12,6 @@
                 "description": "It's your Azure Function's domain name. Make sure it is unique, as this will determine Function's DNS"
             }
         },
-        "ClientId": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Service Principal Id which can be used by Functions to modify VM details and create Public IP"
-            }
-        },
-        "ClientSecret": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Service Principal Secret which can be used by Functions to modify VM details and create Public IP"
-            }
-        },
         "repoUrl": {
             "type": "string",
             "defaultValue": "https://github.com/dgkanatsios/AksNodePublicIP"
@@ -31,6 +19,18 @@
         "branch":{
             "type": "string",
             "defaultValue": "master"
+        },
+        "VirtualMachinePrefixName":{
+            "type": "string",
+            "defaultValue": "CHANGE_ME->aks-nodepool1-XXXXXXXX-"
+        },
+        "NumberOfInitialVirtualMachines":{
+            "type": "int",
+            "defaultValue": 3
+        },
+        "AKSResourcesResourceGroup":{
+            "type": "string",
+            "defaultValue": "CHANGE_ME->MC_AKSNAME_AKSRG_LOCATION"
         }
     },
     "resources": [
@@ -62,11 +62,14 @@
                     "hostingPlanName": {
                         "value": "[variables('hostingPlanName')]"
                     },
-                    "ClientId": {
-                        "value": "[parameters('ClientId')]"
+                    "VirtualMachinePrefixName": {
+                        "value": "[parameters('VirtualMachinePrefixName')]"
                     },
-                    "ClientSecret": {
-                        "value": "[parameters('ClientSecret')]"
+                    "NumberOfInitialVirtualMachines": {
+                        "value": "[parameters('NumberOfInitialVirtualMachines')]"
+                    },
+                    "AKSResourcesResourceGroup": {
+                        "value": "[parameters('AKSResourcesResourceGroup')]"
                     }
                 }
             }

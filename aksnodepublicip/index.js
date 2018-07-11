@@ -1,4 +1,4 @@
-
+const msRestAzure = require('ms-rest-azure');
 const helpers = require('./helpers');
 
 const resourceGroupPattern = '\/resource[Gg]roups\/(.*?)\/';
@@ -14,7 +14,7 @@ module.exports = function (context, eventGridEvent) {
             const resourceGroup = eventGridEvent.data.resourceUri.match(resourceGroupPattern)[1];
             const resourceId = eventGridEvent.data.resourceUri.match(resourceIdPattern)[1];
 
-            helpers.addPublicIP(resourceGroup, ipNamePrefix + resourceId, resourceId).then(() => {
+            msRestAzure.loginWithAppServiceMSI().then(credentials => helpers.addPublicIP(resourceGroup, ipNamePrefix + resourceId, resourceId, credentials)).then(() => {
                 context.log("Create Public IP OK");
                 context.done();
             }).catch((err) => {
@@ -25,7 +25,7 @@ module.exports = function (context, eventGridEvent) {
             const resourceGroup = eventGridEvent.data.resourceUri.match(resourceGroupPattern)[1];
             const resourceId = eventGridEvent.data.resourceUri.match(resourceIdPattern)[1];
 
-            helpers.deletePublicIP(resourceGroup, ipNamePrefix + resourceId).then(() => {
+            msRestAzure.loginWithAppServiceMSI().then(credentials => helpers.deletePublicIP(resourceGroup, ipNamePrefix + resourceId, credentials)).then(() => {
                 context.log("Delete Public IP OK");
                 context.done();
             }).catch((err) => {
