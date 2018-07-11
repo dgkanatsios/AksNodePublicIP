@@ -11,21 +11,26 @@ module.exports = function (context, req) {
     context.log('JavaScript HTTP trigger function processed a request.');
 
     msRestAzure.loginWithAppServiceMSI().then(credentials => {
-        let p = Promise.resolve();
+
+        let promises = [];
         for (let i = 0; i < numberOfVMs; i++) {
             const currentVM = vmName + i;
-            context.log("attempting to create IP for VM ", currentVM);
-            p = p.then(_ => new Promise((resolve, reject) => {
-                return helpers.addPublicIP(resourceGroupName, 'ipconfig-' + currentVM, currentVM, credentials)
-                    .then(() => {
-                        context.log("IP created for VM ", currentVM);
-                        resolve("OK");
-                    })
-                    .catch(err => reject(err));
-            }));
+            promises.push(assignPublicIP(context, currentVM, credentials));
         }
-        return p;
+        return Promise.all(promises);
+
     }).then(() => context.done()).catch(err => {
         helpers.setErrorAndCloseContext(context, err, 500)
     });
 };
+
+function assignPublicIP(context, currentVM, credentials) {
+    return new Promise((resolve, reject) => {
+        helpers.addPublicIP(resourceGroupName, 'ipconfig-' + currentVM, currentVM, credentials)
+            .then(() => {
+                context.log("IP created for VM ", currentVM);
+                resolve("OK");
+            })
+            .catch(err => reject(err));
+    });
+}
