@@ -24,7 +24,7 @@
             "type": "string",
             "defaultValue": "CHANGE_ME"
         },
-        "NumberOfInitialVirtualMachiness":{
+        "NumberOfInitialVirtualMachines":{
             "type": "int",
             "defaultValue": 2
         }
@@ -61,8 +61,8 @@
                     "VirtualMachinePrefixName": {
                         "value": "[parameters('VirtualMachinePrefixName')]"
                     },
-                    "NumberOfInitialVirtualMachiness": {
-                        "value": "[parameters('NumberOfInitialVirtualMachiness')]"
+                    "NumberOfInitialVirtualMachines": {
+                        "value": "[parameters('NumberOfInitialVirtualMachines')]"
                     }
                 }
             }

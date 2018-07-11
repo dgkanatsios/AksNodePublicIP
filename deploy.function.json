@@ -30,7 +30,7 @@
 		"VirtualMachinePrefixName": {
 			"type": "string"
 		},
-		"NumberOfInitialVirtualMachiness": {
+		"NumberOfInitialVirtualMachines": {
 			"type": "string"
 		}
 	},
@@ -131,7 +131,7 @@
 						},
 						{
 							"name": "NUMBER_OF_INITIAL_VMS",
-							"value": "[parameters('NumberOfInitialVirtualMachiness')]"
+							"value": "[parameters('NumberOfInitialVirtualMachines')]"
 						}
 					]
 				}
