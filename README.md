@@ -46,9 +46,9 @@ The project uses [Managed Service Identity](https://docs.microsoft.com/en-us/azu
 
 ### Create and assign IPs to existing VMs/worker Nodes
 
-When this is finished, you need to create and assign Public IPs to the Virtual Machines/worker nodes that already exist in the cluster. To do this, we have created a Function called *runonce*. You can run the Function from inside the Azure Portal (in the Azure Functions blade) or get its url ([instructions](https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-first-azure-function#test-the-function)) and call it from a web browser or an automated solution. Again, this may take some time. When it's done, all your existing VMs in the AKS cluster have Public IPs.
+When this is finished, you need to create and assign Public IPs to the Virtual Machines/worker nodes that already exist in the cluster. To do this, we have created a Function called *runonce*. You can run the Function from inside the Azure Portal (in the Azure Functions blade) or get its url ([instructions](https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-first-azure-function#test-the-function)) and call it from a web browser or an automated solution. Again, this may take some time. When it's done, all your existing VMs in the AKS cluster have Public IPs. You may need to run the *runonce* Function again if you upgrade Kubernetes version in your cluster.
 
-You may need to run the *runonce* Function again if you upgrade Kubernetes version in your cluster.
+Bear in mind that, since *runonce* Function runs operations in parallel, sometimes there may be HTTP-related failures. To recover from this, you can either run *runonce* again or modify the code to add IPs for specific Virtual Machines.
 
 ### Create the Event Grid integration
 
